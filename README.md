@@ -6,7 +6,19 @@ initial value and gives both branches the same read shape: `state()`.
 ## Install
 
 ```sh
+npm install solidjs-state
+```
+
+```sh
+yarn add solidjs-state
+```
+
+```sh
 pnpm add solidjs-state
+```
+
+```sh
+bun add solidjs-state
 ```
 
 `solid-js` is a peer dependency. This package does not add any runtime
@@ -15,7 +27,7 @@ dependencies beyond Solid itself.
 ## Usage
 
 ```ts
-import { createState } from "solidjs-state";
+import { createState } from 'solidjs-state';
 
 const [count, setCount] = createState(0);
 
@@ -29,32 +41,44 @@ Plain objects and arrays use Solid stores internally, but are still read through
 
 ```ts
 const [state, setState] = createState({
-  user: { name: "Peng" },
-  todos: [{ title: "Write docs", done: false }]
+  user: { name: 'Suuu' },
+  todos: [{ title: 'Write docs', done: false }],
 });
 
-state().user.name;
-state((current) => current.user.name);
-state((current) => current.todos.filter((todo) => !todo.done));
-state((current) => ({
+state().user.name; // "Suuu"
+const s = state();
+s.user.name; // "Suuu"
+
+const userName = state((current) => current.user.name);
+const openTodos = state((current) =>
+  current.todos.filter((todo) => !todo.done)
+);
+const summary = state((current) => ({
   name: current.user.name,
-  todoCount: current.todos.length
+  todoCount: current.todos.length,
 }));
 
-setState("user", "name", "Solid");
+userName(); // "Suuu"
+openTodos(); // [{ title: "Write docs", done: false }]
+summary(); // { name: "Suuu", todoCount: 1 }
+
+setState('user', 'name', 'Solid');
+userName(); // "Solid"
 ```
 
 Selectors are for expressive reads, filtering, and composing derived values.
-They do not add memoization by themselves. For expensive derived values, compose
-with Solid's `createMemo`:
+They return Solid accessors, so values stay reactive after store updates:
 
 ```ts
-import { createMemo } from "solid-js";
-
-const visibleTodos = createMemo(() =>
-  state((current) => current.todos.filter((todo) => !todo.done))
+const visibleTodos = state((current) =>
+  current.todos.filter((todo) => !todo.done)
 );
+
+visibleTodos();
 ```
+
+Selector accessors do not cache by themselves. For expensive derived values,
+wrap the accessor with Solid's `createMemo`.
 
 ## State Selection
 
@@ -96,7 +120,7 @@ function createState<T extends object>(
 ): [
   state: {
     (): T;
-    <R>(selector: (state: T) => R): R;
+    <R>(selector: (state: T) => R): Accessor<R>;
   },
   setState: SetStoreFunction<T>
 ];

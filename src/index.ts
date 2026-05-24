@@ -41,7 +41,7 @@ export type WidenSignalState<T> = T extends string
 
 export type StoreAccessor<T extends object> = {
   (): T;
-  <R>(selector: (state: T) => R): R;
+  <R>(selector: (state: T) => R): Accessor<R>;
 };
 
 export type SignalState<T> = [state: Accessor<T>, setState: Setter<T>];
@@ -63,7 +63,7 @@ export function createState<T>(initialValue: T): SignalState<T> | StoreState<T &
 
     const accessor = (<R>(selector?: (state: typeof initialValue) => R) => {
       if (typeof selector === "function") {
-        return selector(store as typeof initialValue);
+        return () => selector(store as typeof initialValue);
       }
 
       return store;

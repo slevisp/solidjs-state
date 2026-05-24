@@ -1,5 +1,5 @@
 import { expectTypeOf, test } from "vitest";
-import type { Setter } from "solid-js";
+import type { Accessor, Setter } from "solid-js";
 import type { SetStoreFunction } from "solid-js/store";
 import { createState } from "../src";
 
@@ -23,10 +23,10 @@ test("object state keeps field hints in state and selectors", () => {
     };
   }>();
 
-  expectTypeOf(state((current) => current.user.name)).toEqualTypeOf<string>();
-  expectTypeOf(state((current) => ({ count: current.count }))).toEqualTypeOf<{
+  expectTypeOf(state((current) => current.user.name)).toEqualTypeOf<Accessor<string>>();
+  expectTypeOf(state((current) => ({ count: current.count }))).toEqualTypeOf<Accessor<{
     count: number;
-  }>();
+  }>>();
   expectTypeOf(setState).toEqualTypeOf<
     SetStoreFunction<{
       count: number;
@@ -52,7 +52,7 @@ test("typed plain object state keeps store selectors and setters", () => {
 
   const [state, setState] = createState(initial);
 
-  expectTypeOf(state((current) => current.user.name)).toEqualTypeOf<string>();
+  expectTypeOf(state((current) => current.user.name)).toEqualTypeOf<Accessor<string>>();
   expectTypeOf(setState).toEqualTypeOf<SetStoreFunction<State>>();
 });
 
@@ -72,12 +72,12 @@ test("array state keeps item hints in selectors", () => {
 
   expectTypeOf(
     state((items) => items.filter((item) => item.visible))
-  ).toEqualTypeOf<
+  ).toEqualTypeOf<Accessor<
     {
       title: string;
       visible: boolean;
     }[]
-  >();
+  >>();
 
   expectTypeOf(setState).toEqualTypeOf<
     SetStoreFunction<
@@ -119,7 +119,7 @@ test("class instances use store accessors", () => {
 
   const [state, setState] = createState(new Counter());
 
-  expectTypeOf(state((current) => current.count)).toEqualTypeOf<number>();
+  expectTypeOf(state((current) => current.count)).toEqualTypeOf<Accessor<number>>();
   expectTypeOf(setState).toEqualTypeOf<SetStoreFunction<Counter>>();
 });
 

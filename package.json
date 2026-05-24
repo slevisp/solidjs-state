@@ -1,6 +1,6 @@
 {
   "name": "solidjs-state",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A unified state helper for SolidJS that chooses signal or store for you.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -15,8 +15,7 @@
   },
   "files": [
     "dist",
-    "README.md",
-    "docs"
+    "README.md"
   ],
   "scripts": {
     "build": "tsup",
